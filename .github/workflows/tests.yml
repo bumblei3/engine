@@ -1,0 +1,51 @@
+name: Unit Tests (C harness)
+
+# Runs the dependency-free C unit-test harness in tests/ on every push and
+# pull request. The harness needs only gcc + make + libm (no SDL2/OpenGL),
+# so it builds and runs anywhere. We exercise several gcc versions and Ubuntu
+# releases via a matrix to catch compiler-specific regressions (e.g. stricter
+# implicit-declaration errors in gcc 14+).
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - 'tests/**'
+      - 'code/qcommon/**'
+      - '.github/workflows/tests.yml'
+  pull_request:
+    paths:
+      - 'tests/**'
+      - 'code/qcommon/**'
+      - '.github/workflows/tests.yml'
+
+jobs:
+  unit-tests:
+    name: "${{ matrix.os }} / gcc-${{ matrix.gcc }}"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+        gcc: [11, 13]
+        include:
+          - os: ubuntu-24.04
+            gcc: 14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-${{ matrix.gcc }} make
+          echo "CC=gcc-${{ matrix.gcc }}" >> "$GITHUB_ENV"
+
+      - name: Build test binaries
+        run: make -f tests/Makefile all
+
+      - name: Run main suite (test_all)
+        run: ./tests/test_all
+
+      - name: Run overflow/guard suite (test_overflow)
+        run: ./tests/test_overflow
