@@ -34,7 +34,8 @@ SUITES   := $(TEST_DIR)/tests_qshared.c $(TEST_DIR)/tests_qparse.c \
             $(TEST_DIR)/tests_qmath5.c $(TEST_DIR)/tests_qmsg6.c \
             $(TEST_DIR)/tests_qmsg7.c $(TEST_DIR)/tests_qva.c \
             $(TEST_DIR)/tests_qmath6.c $(TEST_DIR)/tests_qshared2.c \
-            $(TEST_DIR)/tests_qmath7.c $(TEST_DIR)/tests_qshared3.c
+            $(TEST_DIR)/tests_qmath7.c $(TEST_DIR)/tests_qshared3.c \
+            $(TEST_DIR)/tests_msg3.c $(TEST_DIR)/tests_qhuffman2.c
 
 ENG_SRC  := $(ENGINE)/q_shared.c $(ENGINE)/q_math.c \
             $(ENGINE)/huffman.c $(ENGINE)/msg.c
