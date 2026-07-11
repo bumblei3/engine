@@ -24,6 +24,8 @@ CI environment.
 | `tests_qformat.c`       | `Com_sprintf`, `va`, `Q_strncpy`                                         |
 | `tests_qchar.c`         | `Q_isprint`, `Q_islower`/`Q_isupper`/`Q_isalpha`, `Q_isanumber`, `Q_isintegral` |
 | `tests_qtoken.c`        | `COM_SkipCharset`, `COM_SkipTokens`, `COM_Parse` quoting/comma handling |
+| `tests_qparse2.c`       | `COM_ParseExt` line-break handling (`allowLineBreaks`), `SkipBracedSection` (nested/unbalanced), `SkipRestOfLine`, `Parse1D/2D/3DMatrix` round-trip |
+| `tests_qcompress.c`     | `COM_Compress` block/line comments, `/* */`, GLSL escape, newline collapse, quoted strings |
 | `tests_qinfo.c`         | `Info_ValueForKey`, `Info_SetValueForKey` (+`_Big`), `Info_RemoveKey` (+`_Big`), `Info_Validate`, `Info_NextPair` |
 | `tests_qinfo_overflow.c`| buffer-overflow safety for `Info_SetValueForKey` (separate `test_overflow` binary with non-aborting error stub + canary) |
 | `tests_qhuffman.c`      | Huffman encode/decode round-trip (`Huff_*` in `code/qcommon/huffman.c`)  |
@@ -34,7 +36,7 @@ CI environment.
 | `tests_qinfo_guard.c`   | fatal guard paths: `Com_Error(ERR_DROP)` on oversize input to `Info_ValueForKey`/`Info_RemoveKey`/`Info_SetValueForKey` (+`_Big`), and blacklist rejection (separate `test_overflow` binary) |
 | `tests_qbyteswap.c`     | byte-swap / endianness primitives: `ShortSwap`, `LongSwap`, `Long64Swap`, `FloatSwap`, `CopyShortSwap`, `CopyLongSwap` (round-trip + reversal) |
 
-Total: **232 tests** (main suite) + **8 overflow/guard-safety tests** (separate `test_overflow` binary), all passing.
+Total: **254 tests** (main suite) + **8 overflow/guard-safety tests** (separate `test_overflow` binary), all passing.
 
 ## Run locally
 
