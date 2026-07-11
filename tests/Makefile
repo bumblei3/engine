@@ -30,7 +30,8 @@ SUITES   := $(TEST_DIR)/tests_qshared.c $(TEST_DIR)/tests_qparse.c \
             $(TEST_DIR)/tests_qmsg2.c $(TEST_DIR)/tests_qmsg3.c \
             $(TEST_DIR)/tests_qmath4.c $(TEST_DIR)/tests_qmsg4.c \
             $(TEST_DIR)/tests_qbyteswap.c $(TEST_DIR)/tests_qcompress.c \
-            $(TEST_DIR)/tests_qparse2.c
+            $(TEST_DIR)/tests_qparse2.c $(TEST_DIR)/tests_qmsg5.c \
+            $(TEST_DIR)/tests_qmath5.c
 
 ENG_SRC  := $(ENGINE)/q_shared.c $(ENGINE)/q_math.c \
             $(ENGINE)/huffman.c $(ENGINE)/msg.c

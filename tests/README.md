@@ -32,11 +32,13 @@ CI environment.
 | `tests_qmsg.c`          | `MSG_Init`, `MSG_Write*/Read*` (char/byte/short/long/float/string/bits), `MSG_HashKey`, `MSG_Clear` |
 | `tests_qmsg2.c`         | `MSG_WriteBits` big strings, `MSG_ReadByte` lookahead, `MSG_WriteAngle16`, `MSG_WriteDelta*` |
 | `tests_qmsg3.c`         | out-of-band `MSG_Write*/Read*`, `MSG_Copy`, `MSG_WriteDeltaKey*`        |
+| `tests_qmsg5.c`         | `MSG_WriteBits`/`MSG_ReadBits` bit-exact round-trip (mixed widths, signed 8/16, byte-boundary packing), OOB raw bytes, overflow flag |
+| `tests_qmath5.c`        | `BoxOnPlaneSide` (axial fast path + general signbits case: front/behind/crossing) |
 | `tests_qinfo_overflow.c`| buffer-overflow safety for `Info_SetValueForKey` (separate `test_overflow` binary with non-aborting error stub + canary) |
 | `tests_qinfo_guard.c`   | fatal guard paths: `Com_Error(ERR_DROP)` on oversize input to `Info_ValueForKey`/`Info_RemoveKey`/`Info_SetValueForKey` (+`_Big`), and blacklist rejection (separate `test_overflow` binary) |
 | `tests_qbyteswap.c`     | byte-swap / endianness primitives: `ShortSwap`, `LongSwap`, `Long64Swap`, `FloatSwap`, `CopyShortSwap`, `CopyLongSwap` (round-trip + reversal) |
 
-Total: **254 tests** (main suite) + **8 overflow/guard-safety tests** (separate `test_overflow` binary), all passing.
+Total: **267 tests** (main suite) + **8 overflow/guard-safety tests** (separate `test_overflow` binary), all passing.
 
 ## Run locally
 
