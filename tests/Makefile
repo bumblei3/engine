@@ -28,7 +28,8 @@ SUITES   := $(TEST_DIR)/tests_qshared.c $(TEST_DIR)/tests_qparse.c \
             $(TEST_DIR)/tests_qformat.c $(TEST_DIR)/tests_qmath2.c \
             $(TEST_DIR)/tests_qmath3.c $(TEST_DIR)/tests_qstring2.c \
             $(TEST_DIR)/tests_qmsg2.c $(TEST_DIR)/tests_qmsg3.c \
-            $(TEST_DIR)/tests_qmath4.c $(TEST_DIR)/tests_qmsg4.c
+            $(TEST_DIR)/tests_qmath4.c $(TEST_DIR)/tests_qmsg4.c \
+            $(TEST_DIR)/tests_qbyteswap.c
 
 ENG_SRC  := $(ENGINE)/q_shared.c $(ENGINE)/q_math.c \
             $(ENGINE)/huffman.c $(ENGINE)/msg.c
@@ -45,10 +46,12 @@ $(TARGET): $(STUBS) $(SUITES) $(ENG_SRC)
 # Overflow-safety tests use a non-aborting Com_Error stub so the overrun guard
 # can be observed without killing the test process.
 $(TARGET_OVER): $(TEST_DIR)/test_stubs_nofail.c $(TEST_DIR)/test_main.c \
-                $(TEST_DIR)/oa_test_run.c $(TEST_DIR)/tests_qinfo_overflow.c $(ENG_SRC)
+                $(TEST_DIR)/oa_test_run.c $(TEST_DIR)/tests_qinfo_overflow.c \
+                $(TEST_DIR)/tests_qinfo_guard.c $(ENG_SRC)
 	$(CC) $(CFLAGS) $(INC) -o $@ $(TEST_DIR)/test_stubs_nofail.c \
 	    $(TEST_DIR)/test_main.c $(TEST_DIR)/oa_test_run.c \
-	    $(TEST_DIR)/tests_qinfo_overflow.c $(ENG_SRC) $(LIBS)
+	    $(TEST_DIR)/tests_qinfo_overflow.c $(TEST_DIR)/tests_qinfo_guard.c \
+	    $(ENG_SRC) $(LIBS)
 
 run: all
 	./$(TARGET)
