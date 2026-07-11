@@ -1,3 +1,4 @@
 # Built test binaries (produced by `make -f tests/Makefile`)
 test_all
 test_overflow
+test_parse_nofail

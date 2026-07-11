@@ -33,16 +33,18 @@ SUITES   := $(TEST_DIR)/tests_qshared.c $(TEST_DIR)/tests_qparse.c \
             $(TEST_DIR)/tests_qparse2.c $(TEST_DIR)/tests_qmsg5.c \
             $(TEST_DIR)/tests_qmath5.c $(TEST_DIR)/tests_qmsg6.c \
             $(TEST_DIR)/tests_qmsg7.c $(TEST_DIR)/tests_qva.c \
-            $(TEST_DIR)/tests_qmath6.c $(TEST_DIR)/tests_qshared2.c
+            $(TEST_DIR)/tests_qmath6.c $(TEST_DIR)/tests_qshared2.c \
+            $(TEST_DIR)/tests_qmath7.c $(TEST_DIR)/tests_qshared3.c
 
 ENG_SRC  := $(ENGINE)/q_shared.c $(ENGINE)/q_math.c \
             $(ENGINE)/huffman.c $(ENGINE)/msg.c
 TARGET      := $(TEST_DIR)/test_all
 TARGET_OVER := $(TEST_DIR)/test_overflow
+TARGET_PARSE := $(TEST_DIR)/test_parse_nofail
 
 .PHONY: all run clean
 
-all: $(TARGET) $(TARGET_OVER)
+all: $(TARGET) $(TARGET_OVER) $(TARGET_PARSE)
 
 $(TARGET): $(STUBS) $(SUITES) $(ENG_SRC)
 	$(CC) $(CFLAGS) $(INC) -o $@ $(STUBS) $(SUITES) $(ENG_SRC) $(LIBS)
@@ -57,9 +59,18 @@ $(TARGET_OVER): $(TEST_DIR)/test_stubs_nofail.c $(TEST_DIR)/test_main.c \
 	    $(TEST_DIR)/tests_qinfo_overflow.c $(TEST_DIR)/tests_qinfo_guard.c \
 	    $(ENG_SRC) $(LIBS)
 
+# Parse-session fatal-path tests (COM_MatchToken mismatch -> Com_Error) use the
+# same non-aborting longjmp stub so the ERR_DROP can be observed safely.
+$(TARGET_PARSE): $(TEST_DIR)/test_stubs_nofail.c $(TEST_DIR)/test_main.c \
+                 $(TEST_DIR)/oa_test_run.c $(TEST_DIR)/tests_qparse_nofail.c $(ENG_SRC)
+	$(CC) $(CFLAGS) $(INC) -o $@ $(TEST_DIR)/test_stubs_nofail.c \
+	    $(TEST_DIR)/test_main.c $(TEST_DIR)/oa_test_run.c \
+	    $(TEST_DIR)/tests_qparse_nofail.c $(ENG_SRC) $(LIBS)
+
 run: all
 	./$(TARGET)
 	./$(TARGET_OVER)
+	./$(TARGET_PARSE)
 
 clean:
-	rm -f $(TARGET) $(TARGET_OVER)
+	rm -f $(TARGET) $(TARGET_OVER) $(TARGET_PARSE)
