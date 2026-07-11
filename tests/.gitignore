@@ -2,3 +2,5 @@
 test_all
 test_overflow
 test_parse_nofail
+test_cm
+test_cm_nofail

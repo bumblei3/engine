@@ -41,10 +41,14 @@ ENG_SRC  := $(ENGINE)/q_shared.c $(ENGINE)/q_math.c \
 TARGET      := $(TEST_DIR)/test_all
 TARGET_OVER := $(TEST_DIR)/test_overflow
 TARGET_PARSE := $(TEST_DIR)/test_parse_nofail
+TARGET_CM    := $(TEST_DIR)/test_cm
+TARGET_CMN   := $(TEST_DIR)/test_cm_nofail
+
+CM_SRC := $(ENGINE)/cm_polylib.c
 
 .PHONY: all run clean
 
-all: $(TARGET) $(TARGET_OVER) $(TARGET_PARSE)
+all: $(TARGET) $(TARGET_OVER) $(TARGET_PARSE) $(TARGET_CM) $(TARGET_CMN)
 
 $(TARGET): $(STUBS) $(SUITES) $(ENG_SRC)
 	$(CC) $(CFLAGS) $(INC) -o $@ $(STUBS) $(SUITES) $(ENG_SRC) $(LIBS)
@@ -67,10 +71,28 @@ $(TARGET_PARSE): $(TEST_DIR)/test_stubs_nofail.c $(TEST_DIR)/test_main.c \
 	    $(TEST_DIR)/test_main.c $(TEST_DIR)/oa_test_run.c \
 	    $(TEST_DIR)/tests_qparse_nofail.c $(ENG_SRC) $(LIBS)
 
+# Collision-map winding-geometry tests (cm_polylib.c). They need a malloc-backed
+# allocator instead of the engine zone, provided by test_stubs_cm.c.
+$(TARGET_CM): $(TEST_DIR)/test_stubs_cm.c $(TEST_DIR)/test_main.c \
+              $(TEST_DIR)/oa_test_run.c $(TEST_DIR)/tests_qcm_poly.c $(ENG_SRC) $(CM_SRC)
+	$(CC) $(CFLAGS) $(INC) -o $@ $(TEST_DIR)/test_stubs_cm.c \
+	    $(TEST_DIR)/test_main.c $(TEST_DIR)/oa_test_run.c \
+	    $(TEST_DIR)/tests_qcm_poly.c $(ENG_SRC) $(CM_SRC) $(LIBS)
+
+# Fatal-path winding test: BaseWindingForPlane with a zero normal -> Com_Error.
+# Uses the longjmp nofail stub (test_stubs_cm_nofail.c).
+$(TARGET_CMN): $(TEST_DIR)/test_stubs_cm_nofail.c $(TEST_DIR)/test_main.c \
+               $(TEST_DIR)/oa_test_run.c $(TEST_DIR)/tests_qcm_poly_nofail.c $(ENG_SRC) $(CM_SRC)
+	$(CC) $(CFLAGS) $(INC) -o $@ $(TEST_DIR)/test_stubs_cm_nofail.c \
+	    $(TEST_DIR)/test_main.c $(TEST_DIR)/oa_test_run.c \
+	    $(TEST_DIR)/tests_qcm_poly_nofail.c $(ENG_SRC) $(CM_SRC) $(LIBS)
+
 run: all
 	./$(TARGET)
 	./$(TARGET_OVER)
 	./$(TARGET_PARSE)
+	./$(TARGET_CM)
+	./$(TARGET_CMN)
 
 clean:
-	rm -f $(TARGET) $(TARGET_OVER) $(TARGET_PARSE)
+	rm -f $(TARGET) $(TARGET_OVER) $(TARGET_PARSE) $(TARGET_CM) $(TARGET_CMN)
